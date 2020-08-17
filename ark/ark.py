@@ -8,7 +8,7 @@ def berries(max_torp, current_torp):
     not include the time that the torpidity will take to go
     back down
     """
-    num_berries = (max_torp - current_torp) / 7.5
+    num_berries = ceil((max_torp - current_torp) / 7.5)
     num_seconds = num_berries * 3
     return {"berries": num_berries, "seconds": num_seconds}
 
@@ -27,3 +27,6 @@ def berries2(max_torp, current_torp):
     res = berries(max_torp, current_torp)
     time = minsec(res['seconds'])
     return {"berries": ceil(res["berries"]), 'time': time}
+
+def encumbered(weight):
+    return weight * .85
