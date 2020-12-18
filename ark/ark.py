@@ -1,4 +1,5 @@
 from math import ceil
+from collections.abc import Mapping
 
 def berries(max_torp, current_torp):
     """
@@ -30,3 +31,40 @@ def berries2(max_torp, current_torp):
 
 def encumbered(weight):
     return weight * .85
+
+class Recipe(Mapping):
+    def __init__(self, **kwargs):
+        self.components = dict(kwargs)
+
+    def __mul__(self, other):
+        result = {}
+        for k, v in self.components.items():
+            result[k] = v * other
+        return Recipe(**result)
+
+    def __add__(self, other):
+        result = self.components.copy()
+        for k, v in other.items():
+            result[k] = v + result.get(k, 0)
+        return Recipe(**result)
+
+    def __sub__(self, other):
+        result = self.components.copy()
+        for k, v in other.items():
+            result[k] = result.get(k, 0) - v
+        return Recipe(**result)
+
+    def __getitem__(self, key):
+        return self.components.__getitem__(key)
+
+    def keys(self):
+        return self.components.keys()
+
+    def __iter__(self):
+        return self.components.__iter__()
+
+    def __len__(self):
+        return self.components.__len__()
+
+    def __repr__(self):
+        return 'Recipe(' + ", ".join(["%s=%d" % item for item in self.components.items()]) + ")"
