@@ -10,6 +10,8 @@ shieldstun damage triggerLevel =
         a = 0.65 * (1 - ((s - 0.3) / 0.7))
         s = triggerLevel
 
+-- percent is _after the hit_, which means the _staled_ damage of the move has been applied.
+-- damage, however, is the _unscaled_ value.
 knockback :: Double -> Double -> Double -> Double -> Double -> Double
 knockback baseKb scaling damage percent weight =
     (scalableKb + 18) * scaling + baseKb where
