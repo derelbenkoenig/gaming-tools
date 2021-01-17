@@ -9,3 +9,10 @@ shieldstun damage triggerLevel =
         d = damage
         a = 0.65 * (1 - ((s - 0.3) / 0.7))
         s = triggerLevel
+
+knockback :: Double -> Double -> Double -> Double -> Double -> Double
+knockback damage percent weight baseKb scaling =
+    (scalableKb + 18) * scaling + baseKb where
+        scalableKb = damageContribution * weightContribution * 1.4
+        damageContribution = (percent / 10) + (percent * damage / 20)
+        weightContribution = 200 / (weight + 100)
