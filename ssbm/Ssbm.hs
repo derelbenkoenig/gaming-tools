@@ -14,7 +14,7 @@ shieldstun damage triggerLevel =
 -- damage, however, is the _unscaled_ value.
 knockback :: Double -> Double -> Double -> Double -> Double -> Double
 knockback baseKb scaling damage percent weight =
-    (scalableKb + 18) * scaling + baseKb where
-        scalableKb = damageContribution * weightContribution * 1.4
+    scalableKb * scaling + baseKb where
+        scalableKb = damageContribution * weightContribution * 1.4 + 18
         damageContribution = (percent / 10) + (percent * damage / 20)
         weightContribution = 200 / (weight + 100)
