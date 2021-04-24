@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-import yaml
+import civs
 import random
 
-with open("civs.yml") as civ_file:
-    civ_list = yaml.safe_load(civ_file)
+civ_list = civs.load_civ_list()
 
 chosen_civ = random.choice(civ_list)
 
