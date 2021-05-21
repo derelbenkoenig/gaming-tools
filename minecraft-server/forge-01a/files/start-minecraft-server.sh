@@ -9,7 +9,7 @@ docker run \
 	-v /var/lib/minecraft/data:/data:Z \
 	-p 25565:25565 \
 	-u 5000:5000 \
-	-e FORGE_VERSION=1.12.2 \
+	-e FORGEVERSION=1.12.2 \
 	-e TYPE=FORGE \
 	-e EULA=TRUE \
 	-e UID=5000 \
