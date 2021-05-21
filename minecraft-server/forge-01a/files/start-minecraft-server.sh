@@ -18,5 +18,6 @@ docker run \
 	-e UID=5000 \
 	-e GID=5000 \
 	-e MEMORY=3G \
+	-e ALLOW_FLIGHT=TRUE \
 	--name minecraftserver \
 	docker.io/itzg/minecraft-server:java8
