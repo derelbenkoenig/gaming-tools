@@ -9,7 +9,10 @@ docker run \
 	-v /var/lib/minecraft/data:/data:Z \
 	-p 25565:25565 \
 	-u 5000:5000 \
-	-e FORGEVERSION=1.12.2 \
+	-e VERSION=1.12.2 \
+	-e SEED="-479112237913370" \
+	-e OPS="DerElbenkoenig" \
+	-e OVERRIDE_OPS=true \
 	-e TYPE=FORGE \
 	-e EULA=TRUE \
 	-e UID=5000 \
