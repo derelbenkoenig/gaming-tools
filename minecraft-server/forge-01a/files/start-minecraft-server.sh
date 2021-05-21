@@ -10,7 +10,7 @@ docker run \
 	-p 25565:25565 \
 	-u 5000:5000 \
 	-e VERSION=1.12.2 \
-	-e SEED="-479112237913370" \
+	-e SEED="-749905024073561" \
 	-e OPS="DerElbenkoenig" \
 	-e OVERRIDE_OPS=true \
 	-e TYPE=FORGE \
