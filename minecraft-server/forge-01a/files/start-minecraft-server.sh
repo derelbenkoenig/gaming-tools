@@ -3,7 +3,11 @@
 mkdir -p /var/lib/minecraft/data/mods
 
 # -dit means detach, interactive, pseudo tty. This allows you to attach and detach from stdin
+#
 # 3G memory should leave some room within the 4G that the VM has?
+#
+# OVERRIDE_SERVER_PROPERTIES is needed for the ALLOW_FLIGHT et al to be added to server.properties if
+# 	server.properties already exists
 docker run \
 	-dit \
 	-v /var/lib/minecraft/data:/data:Z \
