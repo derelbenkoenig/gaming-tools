@@ -10,6 +10,7 @@ mkdir -p /var/lib/minecraft/data/mods
 # 	server.properties already exists
 docker run \
 	-dit \
+	--restart="on-failure" \
 	-v /var/lib/minecraft/data:/data:Z \
 	-p 25565:25565 \
 	-u 5000:5000 \
