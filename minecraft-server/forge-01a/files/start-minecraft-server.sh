@@ -8,6 +8,8 @@ mkdir -p /var/lib/minecraft/data/mods
 #
 # OVERRIDE_SERVER_PROPERTIES is needed for the ALLOW_FLIGHT et al to be added to server.properties if
 # 	server.properties already exists
+#
+# LEVEL_TYPE=BIOMESOP needed for biomes o' plenty to actually generate special biomes
 docker run \
 	-dit \
 	--restart="on-failure" \
@@ -25,6 +27,7 @@ docker run \
 	-e GID=5000 \
 	-e MEMORY=3G \
 	-e ALLOW_FLIGHT=TRUE \
+	-e LEVEL_TYPE=BIOMESOP \
 	-e OVERRIDE_SERVER_PROPERTIES=TRUE \
 	--name minecraftserver \
 	docker.io/itzg/minecraft-server:java8
