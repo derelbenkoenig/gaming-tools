@@ -21,6 +21,6 @@ docker run \
 	-e SERVER_NAME="Eastbro Bedrock Server" \
 	-e DIFFICULTY="hard" \
 	-e LEVEL_NAME="Eastbro" \
-	-e LEVEL_SEED="elephantSycophant"
+	-e LEVEL_SEED="elephantSycophant" \
 	--name minecraftserver \
 	docker.io/itzg/minecraft-bedrock-server:latest
