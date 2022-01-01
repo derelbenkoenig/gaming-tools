@@ -6,10 +6,6 @@ mkdir -p /var/lib/minecraft/data/mods
 #
 # 3G memory should leave some room within the 4G that the VM has?
 #
-# OVERRIDE_SERVER_PROPERTIES is needed for the ALLOW_FLIGHT et al to be added to server.properties if
-# 	server.properties already exists
-#
-# LEVEL_TYPE=BIOMESOP needed for biomes o' plenty to actually generate special biomes
 docker run \
 	-dit \
 	--restart="on-failure" \
