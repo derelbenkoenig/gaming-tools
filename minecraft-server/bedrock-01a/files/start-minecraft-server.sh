@@ -19,7 +19,7 @@ docker run \
 	-e EULA=TRUE \
 	-e MEMORY=3G \
 	-e SERVER_NAME="Eastbro Bedrock Server" \
-	-e DIFFICULTY="Hard" \
+	-e DIFFICULTY="hard" \
 	-e LEVEL_NAME="Eastbro" \
 	-e LEVEL_SEED="elephantSycophant"
 	--name minecraftserver \
