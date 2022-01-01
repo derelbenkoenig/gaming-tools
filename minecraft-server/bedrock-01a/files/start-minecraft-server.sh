@@ -18,5 +18,9 @@ docker run \
 	-e OVERRIDE_OPS=true \
 	-e EULA=TRUE \
 	-e MEMORY=3G \
+	-e SERVER_NAME="Eastbro Bedrock Server" \
+	-e DIFFICULTY="Hard" \
+	-e LEVEL_NAME="Eastbro" \
+	-e LEVEL_SEED="elephantSycophant"
 	--name minecraftserver \
 	docker.io/itzg/minecraft-bedrock-server:latest
