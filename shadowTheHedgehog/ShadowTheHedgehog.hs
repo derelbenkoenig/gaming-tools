@@ -116,11 +116,10 @@ instance Show Route where
     show (Route cs) = "[ " ++ intercalate " => " (map show cs) ++ " ]"
 
 enumerateRoutes :: Level -> [Route]
-enumerateRoutes lv = let
-    cs = choices lv
-    steps = map (\c -> (c, destination c)) cs
+enumerateRoutes lv@Level{paths} = let
+    steps = map (\(align, dest) -> ((Choice lv align), dest)) (Map.toAscList paths)
     stepToRoutes (c, dest) = map (\(Route cs) -> Route (c:cs)) (enumerateRoutes dest)
-    in if null cs then [Route []] else concatMap stepToRoutes steps
+    in if null steps then [Route []] else concatMap stepToRoutes steps
 
 allRoutes = enumerateRoutes westopolis
 
