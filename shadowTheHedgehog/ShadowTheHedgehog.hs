@@ -20,10 +20,10 @@ data Level = Level {
 
 instance Show Level where
     show Level {name, paths} =
-        name ++
-        ", Paths: [" ++
-        (intercalate ", " $ map showPath $ Map.toAscList paths) ++
-        "]"
+        name
+        ++ ", Paths: ["
+        ++ (intercalate ", " $ map showPath $ Map.toAscList paths)
+        ++ "]"
             where showPath (align, Level {name}) = show align ++ " -> " ++ name
 
 undefinedLevel = Level "Undefined" Map.empty
@@ -69,14 +69,50 @@ skyTroops = levelBelowWithHero theDoom "Sky Troops" (Just spaceGadget)
 madMatrix = levelBelowWithHero skyTroops "Mad Matrix" (Just lostImpact)
 deathRuins = mkLevel "Death Ruins" (Just spaceGadget) Nothing (Just lostImpact)
 
-theArk = pathlessLevel "The Ark"
-airFleet = pathlessLevel "Air Fleet"
-ironJungle = pathlessLevel "Iron Jungle"
-spaceGadget = pathlessLevel "Space Gadget"
-lostImpact = pathlessLevel "Lost Impact"
+-- The Ark is unusual in having a Neutral and Dark instead of Hero and Dark.
+-- However, this actually makes it _more_ convenient to define Air Fleet, and it's the
+-- more common case that's less convenient
+theArk = mkLevel "The Ark" (Just gunFortress) (Just blackComet) Nothing
+airFleet = levelBelowWithHero theArk "Air Fleet" (Just lavaShelter)
+ironJungle = levelBelowWithHero airFleet "Iron Jungle" (Just cosmicFall)
+spaceGadget = levelBelowWithHero ironJungle "Space Gadget" (Just finalHaunt)
+-- Lost Impact is unusual in having no Dark mission, and even more so in that the Neutral mission
+-- actually moves you in the Dark direction on the path. 
+lostImpact = mkLevel "Lost Impact" Nothing (Just cosmicFall) (Just finalHaunt)
 
-gunFortress = pathlessLevel "GUN Fortress"
-blackComet = pathlessLevel "Black Comet"
-lavaShelter = pathlessLevel "Lava Shelter"
-cosmicFall = pathlessLevel "Cosmic Fall"
-finalHaunt = pathlessLevel "Final Haunt"
+-- all of the "last" levels have only a Hero and Dark mission that simply end the story path
+lastLevel name = mkLevel name (Just darkEnding) Nothing (Just heroEnding)
+
+gunFortress = lastLevel "GUN Fortress"
+blackComet = lastLevel "Black Comet"
+lavaShelter = lastLevel "Lava Shelter"
+cosmicFall = lastLevel "Cosmic Fall"
+finalHaunt = lastLevel "Final Haunt"
+
+darkEnding = pathlessLevel "Dark Ending"
+heroEnding = pathlessLevel "Hero Ending"
+
+data Choice = Choice Level Alignment
+newtype ChoiceTo = ChoiceTo Choice
+
+instance Show Choice where
+    show (Choice Level{name,paths} align) = 
+        name
+        ++ ", "
+        ++ show align
+        ++ " mission"
+
+instance Show ChoiceTo where 
+    -- throws a runtime error if you try to choose a path that level doesn't have
+    show (ChoiceTo choice@(Choice Level{name,paths} align)) =
+        show choice
+        ++ " => "
+        ++ show nextLevelName
+            where Level{name=nextLevelName} = paths Map.! align
+
+choices level@Level{name,paths} = map (Choice level) (Map.keys paths)
+
+type Route = [Choice]
+
+enumRoutes :: Level -> [Route]
+enumRoutes Level{name,paths} = undefined
