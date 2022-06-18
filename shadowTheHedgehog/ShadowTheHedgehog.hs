@@ -102,17 +102,30 @@ instance Show Choice where
         ++ show align
         ++ " mission"
 
+destination (Choice Level{paths} align) = paths Map.! align
+
 instance Show ChoiceTo where 
     -- throws a runtime error if you try to choose a path that level doesn't have
     show (ChoiceTo choice@(Choice Level{name,paths} align)) =
         show choice
         ++ " => "
         ++ show nextLevelName
-            where Level{name=nextLevelName} = paths Map.! align
+            where Level{name=nextLevelName} = destination choice
 
 choices level@Level{name,paths} = map (Choice level) (Map.keys paths)
 
-type Route = [Choice]
+newtype Route = Route [Choice]
 
-enumRoutes :: Level -> [Route]
-enumRoutes Level{name,paths} = undefined
+instance Show Route where
+    show (Route cs) = "[ " ++ intercalate " => " (map show cs) ++ " ]"
+
+enumerateRoutes :: Level -> [Route]
+enumerateRoutes lv = let
+    cs = choices lv
+    steps = map (\c -> (c, destination c)) cs
+    stepToRoutes (c, dest) = map (\(Route cs) -> Route (c:cs)) (enumerateRoutes dest)
+    in if null cs then [Route []] else concatMap stepToRoutes steps
+
+allRoutes = enumerateRoutes westopolis
+
+missionsOfRoute (Route cs) = map (\(Choice _ align) -> align) cs
