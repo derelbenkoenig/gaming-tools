@@ -7,9 +7,6 @@ import Data.List (intercalate)
 import Data.Maybe (catMaybes)
 import Control.Monad (replicateM_)
 
--- this helps me see what I'm doing in the repl
-blanklines n = replicateM_ n (putStrLn "")
-
 data Alignment = Dark | Neutral | Hero
     deriving (Read, Show, Enum, Eq, Ord)
 
