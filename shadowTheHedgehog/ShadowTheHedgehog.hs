@@ -69,7 +69,8 @@ skyTroops = levelBelowWithHero theDoom "Sky Troops" (Just spaceGadget)
 madMatrix = levelBelowWithHero skyTroops "Mad Matrix" (Just lostImpact)
 deathRuins = mkLevel "Death Ruins" (Just spaceGadget) Nothing (Just lostImpact)
 
--- The Ark is unusual in having a Neutral and Dark instead of Hero and Dark.
+-- The Ark is unusual in having a Neutral and Dark instead of Hero and Dark, and the Neutral
+-- mission sends you in the hero direction on the path.
 theArk = mkLevel "The Ark" (Just gunFortress) (Just blackComet) Nothing
 airFleet = mkLevel "Air Fleet" (Just gunFortress) (Just blackComet) (Just lavaShelter)
 ironJungle = levelBelowWithHero airFleet "Iron Jungle" (Just cosmicFall)
