@@ -128,4 +128,6 @@ enumerateRoutes lv = let
 
 allRoutes = enumerateRoutes westopolis
 
+routeNum n = allRoutes !! (n - 1)
+
 missionsOfRoute (Route cs) = map (\(Choice _ align) -> align) cs
