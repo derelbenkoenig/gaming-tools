@@ -115,6 +115,8 @@ newtype Route = Route [Choice]
 instance Show Route where
     show (Route cs) = "[ " ++ intercalate " => " (map show cs) ++ " ]"
 
+printRoute (Route cs) = mapM_ (putStrLn . show) cs
+
 enumerateRoutes :: Level -> [Route]
 enumerateRoutes lv@Level{paths} = let
     steps = map (\(align, dest) -> ((Choice lv align), dest)) (Map.toAscList paths)
