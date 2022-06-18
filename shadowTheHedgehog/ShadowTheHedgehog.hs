@@ -70,10 +70,8 @@ madMatrix = levelBelowWithHero skyTroops "Mad Matrix" (Just lostImpact)
 deathRuins = mkLevel "Death Ruins" (Just spaceGadget) Nothing (Just lostImpact)
 
 -- The Ark is unusual in having a Neutral and Dark instead of Hero and Dark.
--- However, this actually makes it _more_ convenient to define Air Fleet, and it's the
--- more common case that's less convenient
 theArk = mkLevel "The Ark" (Just gunFortress) (Just blackComet) Nothing
-airFleet = levelBelowWithHero theArk "Air Fleet" (Just lavaShelter)
+airFleet = mkLevel "Air Fleet" (Just gunFortress) (Just blackComet) (Just lavaShelter)
 ironJungle = levelBelowWithHero airFleet "Iron Jungle" (Just cosmicFall)
 spaceGadget = levelBelowWithHero ironJungle "Space Gadget" (Just finalHaunt)
 -- Lost Impact is unusual in having no Dark mission, and even more so in that the Neutral mission
