@@ -6,6 +6,7 @@ import qualified Data.Map.Lazy as Map
 import Data.List (intercalate)
 import Data.Maybe (catMaybes)
 import Control.Monad (replicateM_)
+import Formatting (padWithTo)
 
 data Alignment = Dark | Neutral | Hero
     deriving (Read, Show, Enum, Eq, Ord)
@@ -116,6 +117,15 @@ instance Show Route where
     show (Route cs) = "[ " ++ intercalate " => " (map show cs) ++ " ]"
 
 printRoute (Route cs) = mapM_ (putStrLn . show) cs
+
+printRouteAligned (Route cs) = mapM_ putStrLn alignedCs where
+    padWidth = maximum $ map (length . (\(Choice Level{name} _) -> name)) cs
+    pad = padWithTo " " padWidth
+    formatChoice (Choice Level{name} mission) = pad name
+        ++ " => "
+        ++ show mission
+        ++ " mission"
+    alignedCs = map formatChoice cs
 
 enumerateRoutes :: Level -> [Route]
 enumerateRoutes lv@Level{paths} = let
