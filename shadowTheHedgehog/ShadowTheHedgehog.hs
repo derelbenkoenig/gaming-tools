@@ -90,6 +90,7 @@ darkEnding = pathlessLevel "Dark Ending"
 heroEnding = pathlessLevel "Hero Ending"
 
 data Choice = Choice Level Alignment
+    deriving Eq
 newtype ChoiceTo = ChoiceTo Choice
 
 instance Show Choice where
@@ -112,6 +113,7 @@ instance Show ChoiceTo where
 choices level@Level{name,paths} = map (Choice level) (Map.keys paths)
 
 newtype Route = Route [Choice]
+    deriving Eq
 
 instance Show Route where
     show (Route cs) = "[ " ++ intercalate " => " (map show cs) ++ " ]"
