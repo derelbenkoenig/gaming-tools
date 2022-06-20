@@ -5,7 +5,6 @@ module ShadowTheHedgehog where
 import qualified Data.Map.Lazy as Map
 import Data.List (intercalate, findIndex)
 import Data.Maybe (catMaybes)
-import Control.Monad (replicateM_)
 import Formatting (padWithTo)
 
 data Alignment = Dark | Neutral | Hero
