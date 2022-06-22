@@ -142,6 +142,6 @@ missionsOfRoute cs = map (\(Choice _ align) -> align) cs
 
 allRoutesWithPrefix prefix = filter (isPrefixOf prefix) allRoutes
 allRoutesWithPrefixNumbered prefix = filter (isPrefixOf prefix . snd) allRoutesNumbered
-allRoutesWithMissionPrefix missionPrefix = filter (isPrefixOfPrefix . missionsOfRoute) allRoutes
+allRoutesWithMissionPrefix missionPrefix = filter (isPrefixOf missionPrefix . missionsOfRoute) allRoutes
 allRoutesWithMissionPrefixNumbered missionPrefix =
-    filter (isPrefixOfPrefix . missionsOfRoute . snd) allRoutesNumbered
+    filter (isPrefixOf missionPrefix . missionsOfRoute . snd) allRoutesNumbered
