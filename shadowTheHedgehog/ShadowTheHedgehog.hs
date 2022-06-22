@@ -113,17 +113,6 @@ choices level@Level{name,paths} = map (Choice level) (Map.keys paths)
 
 type Route = [Choice]
 
-printRoute cs = mapM_ (putStrLn . show) cs
-
-printRouteAligned cs = mapM_ putStrLn alignedCs where
-    padWidth = maximum $ map (length . (\(Choice Level{name} _) -> name)) cs
-    pad = padWithTo " " padWidth
-    formatChoice (Choice Level{name} mission) = pad name
-        ++ " => "
-        ++ show mission
-        ++ " mission"
-    alignedCs = map formatChoice cs
-
 enumerateRoutes :: Level -> [Route]
 enumerateRoutes lv@Level{paths} = let
     steps = map (\(align, dest) -> ((Choice lv align), dest)) (Map.toAscList paths)
@@ -145,3 +134,20 @@ allRoutesWithPrefixNumbered prefix = filter (isPrefixOf prefix . snd) allRoutesN
 allRoutesWithMissionPrefix missionPrefix = filter (isPrefixOf missionPrefix . missionsOfRoute) allRoutes
 allRoutesWithMissionPrefixNumbered missionPrefix =
     filter (isPrefixOf missionPrefix . missionsOfRoute . snd) allRoutesNumbered
+
+-- printing out routes
+
+printRoute cs = mapM_ (putStrLn . show) cs
+
+printRouteAligned cs = mapM_ putStrLn alignedCs where
+    padWidth = maximum $ map (length . (\(Choice Level{name} _) -> name)) cs
+    pad = padWithTo " " padWidth
+    formatChoice (Choice Level{name} mission) = pad name
+        ++ " => "
+        ++ show mission
+        ++ " mission"
+    alignedCs = map formatChoice cs
+
+printRouteAlignedNumbered n cs = putStrLn ("Misson " ++ show n ++ ":") >> printRouteAligned cs
+
+printRouteAlignedFromNum n = printRouteAlignedNumbered n (routeFromNum n)
