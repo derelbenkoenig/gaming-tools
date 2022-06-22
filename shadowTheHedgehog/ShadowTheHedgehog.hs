@@ -148,6 +148,6 @@ printRouteAligned cs = mapM_ putStrLn alignedCs where
         ++ " mission"
     alignedCs = map formatChoice cs
 
-printRouteAlignedNumbered n cs = putStrLn ("Misson " ++ show n ++ ":") >> printRouteAligned cs
+printRouteAlignedNumbered n cs = putStrLn ("Route " ++ show n ++ ":") >> printRouteAligned cs
 
 printRouteAlignedFromNum n = printRouteAlignedNumbered n (routeFromNum n)
