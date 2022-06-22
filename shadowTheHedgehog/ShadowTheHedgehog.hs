@@ -140,4 +140,8 @@ numOfRouteFromMissions missions = (+ 1) <$> findIndex (((==) missions) . mission
 
 missionsOfRoute cs = map (\(Choice _ align) -> align) cs
 
-allRoutesWithPrefix prefix = filter (prefix `isPrefixOf`) allRoutes
+allRoutesWithPrefix prefix = filter (isPrefixOf prefix) allRoutes
+allRoutesWithPrefixNumbered prefix = filter (isPrefixOf prefix . snd) allRoutesNumbered
+allRoutesWithMissionPrefix missionPrefix = filter (isPrefixOfPrefix . missionsOfRoute) allRoutes
+allRoutesWithMissionPrefixNumbered missionPrefix =
+    filter (isPrefixOfPrefix . missionsOfRoute . snd) allRoutesNumbered
