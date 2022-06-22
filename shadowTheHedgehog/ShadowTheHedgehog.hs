@@ -3,9 +3,9 @@
 module ShadowTheHedgehog where
 
 import qualified Data.Map.Lazy as Map
-import Data.List (intercalate, findIndex)
-import Data.Maybe (catMaybes)
-import Formatting (padWithTo)
+import Data.List ( intercalate, findIndex, isPrefixOf )
+import Data.Maybe ( catMaybes )
+import Formatting ( padWithTo )
 
 data Alignment = Dark | Neutral | Hero
     deriving (Read, Show, Enum, Eq, Ord)
@@ -111,15 +111,11 @@ instance Show ChoiceTo where
 
 choices level@Level{name,paths} = map (Choice level) (Map.keys paths)
 
-newtype Route = Route [Choice]
-    deriving Eq
+type Route = [Choice]
 
-instance Show Route where
-    show (Route cs) = "[ " ++ intercalate " => " (map show cs) ++ " ]"
+printRoute cs = mapM_ (putStrLn . show) cs
 
-printRoute (Route cs) = mapM_ (putStrLn . show) cs
-
-printRouteAligned (Route cs) = mapM_ putStrLn alignedCs where
+printRouteAligned cs = mapM_ putStrLn alignedCs where
     padWidth = maximum $ map (length . (\(Choice Level{name} _) -> name)) cs
     pad = padWithTo " " padWidth
     formatChoice (Choice Level{name} mission) = pad name
@@ -131,13 +127,17 @@ printRouteAligned (Route cs) = mapM_ putStrLn alignedCs where
 enumerateRoutes :: Level -> [Route]
 enumerateRoutes lv@Level{paths} = let
     steps = map (\(align, dest) -> ((Choice lv align), dest)) (Map.toAscList paths)
-    stepToRoutes (c, dest) = map (\(Route cs) -> Route (c:cs)) (enumerateRoutes dest)
-    in if null steps then [Route []] else concatMap stepToRoutes steps
+    stepToRoutes (c, dest) = map (c :) (enumerateRoutes dest)
+    in if null steps then [[]] else concatMap stepToRoutes steps
 
 allRoutes = enumerateRoutes westopolis
+
+allRoutesNumbered = zip [1..] allRoutes
 
 routeFromNum n = allRoutes !! (n - 1)
 
 numOfRouteFromMissions missions = (+ 1) <$> findIndex (((==) missions) . missionsOfRoute) allRoutes
 
-missionsOfRoute (Route cs) = map (\(Choice _ align) -> align) cs
+missionsOfRoute cs = map (\(Choice _ align) -> align) cs
+
+allRoutesWithPrefix prefix = filter (prefix `isPrefixOf`) allRoutes
