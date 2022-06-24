@@ -131,9 +131,13 @@ missionsOfRoute cs = map (\(Choice _ align) -> align) cs
 
 allRoutesWithPrefix prefix = filter (isPrefixOf prefix) allRoutes
 allRoutesWithPrefixNumbered prefix = filter (isPrefixOf prefix . snd) allRoutesNumbered
+
 allRoutesWithMissionPrefix missionPrefix = filter (isPrefixOf missionPrefix . missionsOfRoute) allRoutes
 allRoutesWithMissionPrefixNumbered missionPrefix =
     filter (isPrefixOf missionPrefix . missionsOfRoute . snd) allRoutesNumbered
+
+allRoutesWithChoice choice = filter (elem choice) allRoutes
+allRoutesWithChoiceNumbered choice = filter (elem choice . snd) allRoutesNumbered
 
 -- printing out routes
 
