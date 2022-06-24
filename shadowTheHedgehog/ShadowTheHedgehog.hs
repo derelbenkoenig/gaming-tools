@@ -6,6 +6,8 @@ import qualified Data.Map.Lazy as Map
 import Data.List ( intercalate, findIndex, isPrefixOf )
 import Data.Maybe ( catMaybes )
 import Formatting ( padWithTo )
+import Searching
+import Data.Functor.Contravariant
 
 data Alignment = Dark | Neutral | Hero
     deriving (Read, Show, Enum, Eq, Ord)
@@ -119,15 +121,24 @@ enumerateRoutes lv@Level{paths} = let
     stepToRoutes (c, dest) = map (c :) (enumerateRoutes dest)
     in if null steps then [[]] else concatMap stepToRoutes steps
 
+missionsOfRoute cs = map (\(Choice _ align) -> align) cs
+
 allRoutes = enumerateRoutes westopolis
 
 allRoutesNumbered = zip [1..] allRoutes
 
 routeFromNum n = allRoutes !! (n - 1)
 
-numOfRouteFromMissions missions = (+ 1) <$> findIndex (((==) missions) . missionsOfRoute) allRoutes
+-- Searching routes
 
-missionsOfRoute cs = map (\(Choice _ align) -> align) cs
+searchByFirstChoice :: Choice -> FilterSearch Route
+searchByFirstChoice c = mkFilterSearch $ (==) c . head
+searchForWestopolisDarkRoutes = searchByFirstChoice (Choice westopolis Dark)
+
+numberedSearch :: SearchMode s t Route m Route => s Route -> s (Int, Route)
+numberedSearch s = contramap snd s
+
+numOfRouteFromMissions missions = (+ 1) <$> findIndex (((==) missions) . missionsOfRoute) allRoutes
 
 allRoutesWithPrefix prefix = filter (isPrefixOf prefix) allRoutes
 allRoutesWithPrefixNumbered prefix = filter (isPrefixOf prefix . snd) allRoutesNumbered
