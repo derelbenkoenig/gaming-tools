@@ -138,6 +138,7 @@ searchForWestopolisDarkRoutes = searchByFirstChoice (Choice westopolis Dark)
 numberedSearch :: SearchMode s t Route m Route => s Route -> s (Int, Route)
 numberedSearch s = contramap snd s
 
+-- TODO rewrite the rest of these functions using the Searching module
 routeFromMissionsSearch missions = mkFindSearch ((==) missions . missionsOfRoute)
 numOfRouteFromMissions missions = (+ 1) <$> findIndex (((==) missions) . missionsOfRoute) allRoutes
 
