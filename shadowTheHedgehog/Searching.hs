@@ -3,7 +3,7 @@
 
 module Searching where
 
-import Data.List ( find )
+import Data.List ( find, findIndex )
 import Data.Functor.Contravariant
 
 class (Foldable t, Monad m, Contravariant s) => SearchMode s t a m b | s -> t, s -> m where
@@ -20,5 +20,16 @@ instance SearchMode FilterSearch [] a [] a where
 newtype FindSearch a = FindSearch (Predicate a)
     deriving Contravariant
 
+mkFindSearch p = FindSearch $ Predicate p
+
 instance SearchMode FindSearch [] a Maybe a where
     search (FindSearch (Predicate p)) = find p
+
+newtype FindIndexSearch p = FindIndexSearch (Predicate p)
+    deriving Contravariant
+
+mkFindIndexSearch p = FindIndexSearch $ Predicate p
+
+instance SearchMode FindIndexSearch [] a Maybe Int where
+    search (FindIndexSearch (Predicate p)) = findIndex p
+
