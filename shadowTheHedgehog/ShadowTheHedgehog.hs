@@ -7,10 +7,13 @@ import Data.List ( intercalate, findIndex, isPrefixOf )
 import Data.Maybe ( catMaybes )
 import Formatting ( padWithTo )
 import Searching
-import Data.Functor.Contravariant
+import Data.Profunctor hiding ( Choice )
+import Control.Monad ( (>=>) )
 
 data Alignment = Dark | Neutral | Hero
     deriving (Read, Show, Enum, Eq, Ord)
+
+data Mission = Mission { alignment :: Alignment, description :: String }
 
 data Level = Level {
     name :: String,
@@ -131,12 +134,11 @@ routeFromNum n = allRoutes !! (n - 1)
 
 -- Searching routes
 
-searchByFirstChoice :: Choice -> FilterSearch Route
-searchByFirstChoice c = mkFilterSearch $ (==) c . head
-searchForWestopolisDarkRoutes = searchByFirstChoice (Choice westopolis Dark)
+numOfRoute r = runSearch (rmap (+1) (mkElemIndexSearch r)) allRoutes
 
-numberedSearch :: SearchMode s t Route m Route => s Route -> s (Int, Route)
-numberedSearch s = contramap snd s
+numberedSearch :: Search [] m Route Route -> Search [] m (Int, Route) (Int, Route)
+-- numberedSearch s = let (Search s1) = lmap snd s in Search (s1 >=> \r -> (,r) <$> numOfRoute r )
+numberedSearch s = undefined
 
 -- TODO rewrite the rest of these functions using the Searching module
 routeFromMissionsSearch missions = mkFindSearch ((==) missions . missionsOfRoute)

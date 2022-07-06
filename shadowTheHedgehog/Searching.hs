@@ -1,62 +1,38 @@
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleInstances,
     GeneralisedNewtypeDeriving, FlexibleContexts, GADTs, InstanceSigs, 
-    TypeApplications #-}
+    TypeApplications, StandaloneKindSignatures #-}
 
 module Searching where
 
 import Data.List ( find, findIndex, elemIndex )
+import Data.Profunctor
 import Data.Functor.Contravariant
 
-class (Foldable t, Monad m, Contravariant s) => SearchMode s t a m b | s -> t, s -> m where
-    search :: s a -> t a -> m b
+type Search :: (* -> *) -> (* -> *) -> * -> * -> *
+data Search t m a b where
+    Search :: (Functor t, Foldable t, Monad m) =>
+        { runSearch :: (t a -> m b) } -> Search t m a b
 
-fmapSearch f s = fmap f . search s
+instance Profunctor (Search t m) where
+    lmap f (Search search) = Search newSearch where
+        newSearch as = search (fmap f as)
+    rmap f (Search search) = Search newSearch where
+        newSearch as = fmap f $ search as
 
-newtype FilterSearch a = FilterSearch (Predicate a)
-    deriving Contravariant
+mkFilterSearch p = Search (filter p)
+mkFindSearch :: (a -> Bool) -> Search [] Maybe a a
+mkFindSearch p = Search (find p)
+mkFindIndexSearch p = Search (findIndex p)
+-- actually using elemIndex wouldn't let me make a contravariant
+-- in fact, it still doesn't this way either.
+-- You can take the e and make a contravariant, but the e itself isn't
+mkElemIndexSearch e = mkFindIndexSearch ((==) e)
 
-mkFilterSearch p = FilterSearch $ Predicate p
+data SearchMode p t m a b where
+    SearchMode :: Contravariant p => { mkSearch :: (p a -> Search t m a b) } -> SearchMode p t m a b
 
-instance SearchMode FilterSearch [] a [] a where
-    search (FilterSearch (Predicate p)) = filter p
+filterSearchMode = SearchMode (mkFilterSearch . getPredicate)
+findSearchMode = SearchMode (mkFindSearch . getPredicate)
+findIndexSearchMode = SearchMode (mkFindIndexSearch . getPredicate)
 
-newtype FindSearch a = FindSearch (Predicate a)
-    deriving Contravariant
-
-mkFindSearch p = FindSearch $ Predicate p
-
-instance SearchMode FindSearch [] a Maybe a where
-    search (FindSearch (Predicate p)) = find p
-
-newtype FindIndexSearch p = FindIndexSearch (Predicate p)
-    deriving Contravariant
-
-mkFindIndexSearch p = FindIndexSearch $ Predicate p
-
-instance SearchMode FindIndexSearch [] a Maybe Int where
-    search (FindIndexSearch (Predicate p)) = findIndex p
-
-data ElemIndexSearch a where
-    ElemIndexSearch :: Eq a => a -> ElemIndexSearch a
-
---  this declaration does not compile, the instance sig is not "more general" than the class sig
-instance (a ~ b) => Contravariant ElemIndexSearch where
-    contramap :: (a ~ b) => (a -> b) -> ElemIndexSearch b -> ElemIndexSearch a
-    contramap f (ElemIndexSearch b) = ElemIndexSearch (f b)
-
-instance SearchMode ElemIndexSearch [] a Maybe Int where
-    search (ElemIndexSearch a) = elemIndex a
-
-
--------------------------------------
--- trying a different way entirely...
--------------------------------------
-
-data SearchMode1 s t a m b where
-    SearchMode1 :: (Foldable t, Monad m, Contravariant s) =>
-        (s a -> t a -> m b)
-        -> SearchMode1 s t a m b
-
-instance Functor (SearchMode1 s t a m) where
-    fmap f (SearchMode1 search) = SearchMode1 newSearch where
-        newSearch s as = fmap f (search s as)
+-- elemIndexSearchMode = SearchMode (mkFindIndexSearch . (==) . Identity)
