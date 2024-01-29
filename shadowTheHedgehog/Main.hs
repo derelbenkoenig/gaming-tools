@@ -1,4 +1,8 @@
 module Main where
 
+import API
+import Network.Wai.Handler.Warp
+
 main :: IO ()
-main = putStrLn "Hello, Haskell!"
+main = do
+    run 8080 routeApi

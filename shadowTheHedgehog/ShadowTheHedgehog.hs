@@ -1,24 +1,37 @@
 {-# LANGUAGE NamedFieldPuns, TupleSections #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module ShadowTheHedgehog where
 
-import qualified Data.Map.Lazy as Map
-import Data.List ( intercalate, findIndex, isPrefixOf )
-import Data.Maybe ( catMaybes )
-import Formatting ( padWithTo )
-import Searching
-import Data.Profunctor hiding ( Choice )
 import Control.Monad ( (>=>) )
+import Data.Aeson
+import Data.List ( intercalate, findIndex, isPrefixOf )
+import qualified Data.Map.Lazy as Map
+import Data.Maybe ( catMaybes )
+import GHC.Generics
+import Formatting ( padWithTo )
 
 data Alignment = Dark | Neutral | Hero
-    deriving (Read, Show, Enum, Eq, Ord)
+    deriving (Read, Show, Enum, Eq, Ord, Generic)
+
+instance ToJSON Alignment where
+
+instance ToJSONKey Alignment where
+
 
 data Mission = Mission { alignment :: Alignment, description :: String }
+    deriving Generic
+
+instance ToJSON Mission where
 
 data Level = Level {
     name :: String,
     paths :: Map.Map Alignment Level
-} deriving (Eq)
+} deriving (Eq, Generic)
+
+instance ToJSON Level where
+
 
 instance Show Level where
     show Level {name, paths} =
@@ -94,8 +107,14 @@ darkEnding = pathlessLevel "Dark Ending"
 heroEnding = pathlessLevel "Hero Ending"
 
 data Choice = Choice Level Alignment
-    deriving Eq
-newtype ChoiceTo = ChoiceTo Choice
+    deriving (Eq, Generic)
+
+instance ToJSON Choice where
+    toJSON (Choice (Level levelName _) alignment) =
+        object ["level" .= levelName, "mission" .= show alignment]
+
+    toEncoding (Choice (Level levelName _) alignment) =
+        pairs $ "level" .= levelName <> "mission" .= show alignment
 
 instance Show Choice where
     show (Choice Level{name,paths} align) = 
@@ -105,14 +124,6 @@ instance Show Choice where
         ++ " mission"
 
 destination (Choice Level{paths} align) = paths Map.! align
-
-instance Show ChoiceTo where 
-    -- throws a runtime error if you try to choose a path that level doesn't have
-    show (ChoiceTo choice@(Choice Level{name,paths} align)) =
-        show choice
-        ++ " => "
-        ++ show nextLevelName
-            where Level{name=nextLevelName} = destination choice
 
 choices level@Level{name,paths} = map (Choice level) (Map.keys paths)
 
@@ -133,16 +144,6 @@ allRoutesNumbered = zip [1..] allRoutes
 routeFromNum n = allRoutes !! (n - 1)
 
 -- Searching routes
-
-numOfRoute r = runSearch (rmap (+1) (mkElemIndexSearch r)) allRoutes
-
-numberedSearch :: Search [] m Route Route -> Search [] m (Int, Route) (Int, Route)
--- numberedSearch s = let (Search s1) = lmap snd s in Search (s1 >=> \r -> (,r) <$> numOfRoute r )
-numberedSearch s = undefined
-
--- TODO rewrite the rest of these functions using the Searching module
-routeFromMissionsSearch missions = mkFindSearch ((==) missions . missionsOfRoute)
-numOfRouteFromMissions missions = (+ 1) <$> findIndex (((==) missions) . missionsOfRoute) allRoutes
 
 allRoutesWithPrefix prefix = filter (isPrefixOf prefix) allRoutes
 allRoutesWithPrefixNumbered prefix = filter (isPrefixOf prefix . snd) allRoutesNumbered
