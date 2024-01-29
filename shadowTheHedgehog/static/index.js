@@ -1,5 +1,7 @@
 async function fetchRoute(num) {
-    return await fetch(`/api/v1/routes/${num}`);
+    const resp = await fetch(`/api/v1/routes/${num}`);
+    const respJson = await resp.json();
+    return respJson;
 }
 
 function tableRowFromChoice({level, mission}) {
@@ -9,18 +11,23 @@ function tableRowFromChoice({level, mission}) {
     const missionCell = document.createElement("td");
     missionCell.innerText = mission;
     row.append(levelCell, missionCell)
-    return row
+    return row;
 }
 
 function updateTable(choices) {
     const tableBody = document.getElementById("routeTableBody");
     const newRows = choices.map((choice) => tableRowFromChoice(choice));
-    tableBody.children.forEach((child) => { child.remove(); });
+    for (const child of tableBody.querySelectorAll("tr")) {
+        child.remove();
+    }
     tableBody.append(...newRows);
 }
 
-document.getElementById("getRouteButton").addEventListener("click", async () => {
-    const routeNum = parseInt(document.getElementById("numberInput").value);
-    const routeChoices = await fetchRoute(routeNum);
-    updateTable(routeChoices);
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("getRouteButton").addEventListener("click", async (event) => {
+        const routeNum = parseInt(document.getElementById("numberInput").value);
+        const routeChoices = await fetchRoute(routeNum);
+        updateTable(routeChoices);
+        event.stopPropagation();
+    });
 });

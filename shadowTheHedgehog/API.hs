@@ -30,14 +30,14 @@ indexHTML :: Response
 indexHTML = responseFile
     status200
     [("Content-Type", "text/html")]
-    "./statc/index.html"
+    "static/index.html"
     Nothing
 
 indexJS :: Response
 indexJS = responseFile
     status200
     [("Content-Type", "text/javascript")]
-    "./statc/index.js"
+    "static/index.js"
     Nothing
 
 routeResponseFromNumber :: Int -> Response
