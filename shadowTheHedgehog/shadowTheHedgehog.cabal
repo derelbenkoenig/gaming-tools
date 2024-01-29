@@ -28,6 +28,7 @@ library
                 aeson,
                 text,
                 megaparsec
+  hs-source-dirs: src
   default-language:    Haskell2010
 
 executable shadowApiServer
@@ -43,5 +44,5 @@ executable shadowApiServer
                 aeson,
                 text,
                 megaparsec
-  -- hs-source-dirs:
+  hs-source-dirs: src
   default-language:    Haskell2010

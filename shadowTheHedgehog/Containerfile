@@ -1,0 +1,10 @@
+FROM alpine
+
+WORKDIR /shadowApiServer
+
+COPY --chmod=755 .stack-work/dist/x86_64-linux/ghc-9.8.1/build/shadowApiServer/shadowApiServer .
+COPY static static
+
+EXPOSE 8080
+
+CMD ["./shadowApiServer"]
