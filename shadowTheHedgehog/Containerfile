@@ -4,7 +4,7 @@ WORKDIR "/build"
 
 RUN \
     --mount=type=bind,src=.,dst=.,rw=true \
-    --mount=type=cache,target=${HOME}/.stack/programs \
+    --mount=type=cache,target=/root/.stack \
     stack build --system-ghc --copy-bins --local-bin-path /shadow_api
 
 WORKDIR "/shadow_api"
