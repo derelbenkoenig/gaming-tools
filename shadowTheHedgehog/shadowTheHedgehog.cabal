@@ -18,7 +18,8 @@ build-type:          Simple
 extra-source-files:  CHANGELOG.md
 
 library
-  exposed-modules: ShadowTheHedgehog, API, Formatting
+  exposed-modules: ShadowTheHedgehog
+  other-modules: API, Formatting
   build-depends: 
                 base,
                 containers,
