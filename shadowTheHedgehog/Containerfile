@@ -1,8 +1,13 @@
-FROM alpine
+FROM docker.io/haskell:9.8.1
 
-WORKDIR /shadowApiServer
+WORKDIR "/build"
 
-COPY --chmod=755 .stack-work/dist/x86_64-linux/ghc-9.8.1/build/shadowApiServer/shadowApiServer .
+RUN \
+    --mount=type=bind,src=.,dst=.,rw=true \
+    stack build --system-ghc --copy-bins --local-bin-path /shadow_api
+
+WORKDIR "/shadow_api"
+
 COPY static static
 
 EXPOSE 8080
