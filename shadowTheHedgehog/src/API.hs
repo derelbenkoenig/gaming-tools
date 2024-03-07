@@ -42,7 +42,7 @@ indexJS = responseFile
 
 routeResponseFromNumber :: Int -> Response
 routeResponseFromNumber n =
-    if n < 1 || n > 326
+    if n < 1 || n > (length allRoutes)
        then response404
        else responseLBS
             status200 
